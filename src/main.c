@@ -6,9 +6,15 @@
 
 #define BOARD_SIZE 3
 
-int game_board[BOARD_SIZE][BOARD_SIZE] = {0};
+typedef enum {
+    PLAYER_NONE = 0,
+    PLAYER_X,
+    PLAYER_O
+} Player;
 
-void render_board(int board[BOARD_SIZE][BOARD_SIZE], int size);
+Player game_board[BOARD_SIZE][BOARD_SIZE] = {0};
+
+void render_board(Player board[BOARD_SIZE][BOARD_SIZE], int size);
 void init_console();
 bool is_cell_occupied(int row, int col);
 int get_user_move();
@@ -16,7 +22,7 @@ int get_user_move();
 int main(void) {
     init_console();
 
-    bool is_x_turn = true;
+    Player current_player = PLAYER_X;
     int user_move;
     int user_move_col;
     int user_move_row;
@@ -29,13 +35,10 @@ int main(void) {
             user_move_row = (user_move - 1) / BOARD_SIZE;
         } while (is_cell_occupied(user_move_row, user_move_col));
 
-        if (is_x_turn) {
-            game_board[user_move_row][user_move_col] = 1;
-        } else {
-            game_board[user_move_row][user_move_col] = 2;
-        }
+        game_board[user_move_row][user_move_col] = current_player;
 
-        is_x_turn = !is_x_turn;
+
+        current_player = current_player == PLAYER_X ? PLAYER_O : PLAYER_X;
     }
 
     return 0;
@@ -62,19 +65,19 @@ int get_user_move() {
     return res;
 }
 
-void render_board(int board[BOARD_SIZE][BOARD_SIZE], int size) {
+void render_board(Player board[BOARD_SIZE][BOARD_SIZE], int size) {
     int cell_number = 1;
 
     for (int r = 0; r < size; r++) {
         for (int c = 0; c < size; c++) {
             switch (board[r][c]) {
-                case 0:
+                case PLAYER_NONE:
                     printf("  %d  ", cell_number);
                     break;
-                case 1:
+                case PLAYER_X:
                     printf("    ");
                     break;
-                case 2:
+                case PLAYER_O:
                     printf("    ");
                     break;
             }

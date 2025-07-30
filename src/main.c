@@ -9,27 +9,9 @@
 int game_board[BOARD_SIZE][BOARD_SIZE] = {0};
 
 void render_board(int board[BOARD_SIZE][BOARD_SIZE], int size);
-
-void init_console() {
-    SetConsoleOutputCP(CP_UTF8);
-}
-
-bool is_cell_occupied(int row, int col) {
-    return game_board[row][col] != 0;
-}
-
-int get_user_move() {
-    int min_index = 1;
-    int max_index = BOARD_SIZE * BOARD_SIZE;
-
-    int res;
-    do {
-        printf("Enter cell number(%d-%d): ", min_index, max_index);
-        scanf("%d", &res);
-    } while (res < min_index || res > max_index);
-
-    return res;
-}
+void init_console();
+bool is_cell_occupied(int row, int col);
+int get_user_move();
 
 int main(void) {
     init_console();
@@ -57,6 +39,27 @@ int main(void) {
     }
 
     return 0;
+}
+
+void init_console() {
+    SetConsoleOutputCP(CP_UTF8);
+}
+
+bool is_cell_occupied(int row, int col) {
+    return game_board[row][col] != 0;
+}
+
+int get_user_move() {
+    int min_index = 1;
+    int max_index = BOARD_SIZE * BOARD_SIZE;
+
+    int res;
+    do {
+        printf("Enter cell number(%d-%d): ", min_index, max_index);
+        scanf("%d", &res);
+    } while (res < min_index || res > max_index);
+
+    return res;
 }
 
 void render_board(int board[BOARD_SIZE][BOARD_SIZE], int size) {

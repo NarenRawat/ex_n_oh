@@ -22,11 +22,13 @@ int main(void) {
 }
 
 void render_board(int board[BOARD_SIZE][BOARD_SIZE], int size) {
+    int cell_number = 1;
+
     for (int r = 0; r < size; r++) {
         for (int c = 0; c < size; c++) {
             switch (board[r][c]) {
                 case 0:
-                    printf("     ");
+                    printf("  %d  ", cell_number);
                     break;
                 case 1:
                     printf("    ");
@@ -39,6 +41,8 @@ void render_board(int board[BOARD_SIZE][BOARD_SIZE], int size) {
             if (c != size - 1) {
                 printf("│");
             }
+
+            cell_number++;
         }
 
         if (r != size - 1) {

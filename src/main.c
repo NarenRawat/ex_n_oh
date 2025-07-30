@@ -5,6 +5,9 @@
 #include "utils.h"
 
 #define BOARD_SIZE 3
+#define ANSI_FG_RED "\e[38;2;255;0;0m"
+#define ANSI_FG_GREEN "\e[38;2;0;255;0m"
+#define ANSI_RESET "\e[0m"
 
 typedef enum {
     PLAYER_NONE = 0,
@@ -126,10 +129,14 @@ void render_board(Player board[BOARD_SIZE][BOARD_SIZE], int size) {
                     printf("  %d  ", cell_number);
                     break;
                 case PLAYER_X:
+                    printf(ANSI_FG_RED);
                     printf("    ");
+                    printf(ANSI_RESET);
                     break;
                 case PLAYER_O:
+                    printf(ANSI_FG_GREEN);
                     printf("    ");
+                    printf(ANSI_RESET);
                     break;
             }
 

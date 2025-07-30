@@ -14,6 +14,10 @@ void init_console() {
     SetConsoleOutputCP(CP_UTF8);
 }
 
+bool is_cell_occupied(int row, int col) {
+    return game_board[row][col] != 0;
+}
+
 int get_user_move() {
     int min_index = 1;
     int max_index = BOARD_SIZE * BOARD_SIZE;
@@ -32,13 +36,16 @@ int main(void) {
 
     bool is_x_turn = true;
     int user_move;
+    int user_move_col;
+    int user_move_row;
 
     while (1) {
         render_board(game_board, BOARD_SIZE);
-        user_move = get_user_move();
-
-        int user_move_col = (user_move - 1) % BOARD_SIZE;
-        int user_move_row = (user_move - 1) / BOARD_SIZE;
+        do {
+            user_move = get_user_move();
+            user_move_col = (user_move - 1) % BOARD_SIZE;
+            user_move_row = (user_move - 1) / BOARD_SIZE;
+        } while (is_cell_occupied(user_move_row, user_move_col));
 
         if (is_x_turn) {
             game_board[user_move_row][user_move_col] = 1;

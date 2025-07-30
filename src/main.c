@@ -18,6 +18,7 @@ void render_board(Player board[BOARD_SIZE][BOARD_SIZE], int size);
 void init_console();
 bool is_cell_occupied(int row, int col);
 int get_user_move();
+bool check_winner(Player current_player);
 
 int main(void) {
     init_console();
@@ -26,6 +27,7 @@ int main(void) {
     int user_move;
     int user_move_col;
     int user_move_row;
+    int total_cell_occupied = 0;
 
     while (1) {
         render_board(game_board, BOARD_SIZE);
@@ -37,11 +39,60 @@ int main(void) {
 
         game_board[user_move_row][user_move_col] = current_player;
 
+        total_cell_occupied++;
+
+        if (check_winner(current_player)) {
+            render_board(game_board, BOARD_SIZE);
+            printf("%c won!\n", current_player == PLAYER_X ? 'X' : 'O');
+            break;
+        } else if (total_cell_occupied == 9) { // all cells are filled
+            render_board(game_board, BOARD_SIZE);
+            printf("It's a draw!\n");
+            break;
+        }
 
         current_player = current_player == PLAYER_X ? PLAYER_O : PLAYER_X;
     }
 
     return 0;
+}
+
+
+bool check_winner(Player current_player) {
+    bool diagonal_equal = game_board[0][0] == current_player
+                       && game_board[1][1] == current_player
+                       && game_board[2][2] == current_player;
+    if (diagonal_equal) {
+        return true;
+    }
+
+    bool sec_diag_equal = game_board[0][2] == current_player
+                       && game_board[1][1] == current_player
+                       && game_board[2][0] == current_player;
+
+    if (sec_diag_equal) {
+        return true;
+    }
+
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        bool col_equal = game_board[0][i] == current_player
+                      && game_board[1][i] == current_player
+                      && game_board[2][i] == current_player;
+
+        if (col_equal) {
+            return true;
+        }
+
+        bool row_equal = game_board[i][0] == current_player
+                      && game_board[i][1] == current_player
+                      && game_board[i][2] == current_player;
+
+        if (row_equal) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void init_console() {

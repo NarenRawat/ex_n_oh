@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <windows.h>
 
 #include "utils.h"
@@ -13,10 +14,40 @@ void init_console() {
     SetConsoleOutputCP(CP_UTF8);
 }
 
+int get_user_move() {
+    int min_index = 1;
+    int max_index = BOARD_SIZE * BOARD_SIZE;
+
+    int res;
+    do {
+        printf("Enter cell number(%d-%d): ", min_index, max_index);
+        scanf("%d", &res);
+    } while (res < min_index || res > max_index);
+
+    return res;
+}
+
 int main(void) {
     init_console();
 
-    render_board(game_board, BOARD_SIZE);
+    bool is_x_turn = true;
+    int user_move;
+
+    while (1) {
+        render_board(game_board, BOARD_SIZE);
+        user_move = get_user_move();
+
+        int user_move_col = (user_move - 1) % BOARD_SIZE;
+        int user_move_row = (user_move - 1) / BOARD_SIZE;
+
+        if (is_x_turn) {
+            game_board[user_move_row][user_move_col] = 1;
+        } else {
+            game_board[user_move_row][user_move_col] = 2;
+        }
+
+        is_x_turn = !is_x_turn;
+    }
 
     return 0;
 }

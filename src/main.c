@@ -8,6 +8,8 @@
 #define ANSI_FG_RED "\e[38;2;255;0;0m"
 #define ANSI_FG_GREEN "\e[38;2;0;255;0m"
 #define ANSI_RESET "\e[0m"
+#define ANSI_CLEAR "\e[2J"
+#define ANSI_CUR_POS "\e[%d;%dH"
 
 typedef enum {
     PLAYER_NONE = 0,
@@ -25,6 +27,7 @@ bool check_winner(Player current_player);
 
 int main(void) {
     init_console();
+    printf(ANSI_CLEAR);
 
     Player current_player = PLAYER_X;
     int user_move;
@@ -120,6 +123,8 @@ int get_user_move() {
 }
 
 void render_board(Player board[BOARD_SIZE][BOARD_SIZE], int size) {
+    printf(ANSI_CUR_POS, 1, 1);
+    printf(ANSI_CLEAR);
     int cell_number = 1;
 
     for (int r = 0; r < size; r++) {

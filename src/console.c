@@ -45,6 +45,10 @@ void get_console_size(int *rows, int *cols) {
 }
 
 void init_console(void) {
+    printf("\e[?1049h");
+    printf("\e[?25l");
+
+
     stdout_handle = GetStdHandle(STD_OUTPUT_HANDLE);
     stdin_handle = GetStdHandle(STD_INPUT_HANDLE);
 
@@ -53,10 +57,18 @@ void init_console(void) {
 
     out_code_page = GetConsoleOutputCP();
     SetConsoleOutputCP(CP_UTF8);
+
+    // Hide the cursor
 }
 
 void cleanup_console(void) {
+
     SetConsoleOutputCP(out_code_page);
     SetConsoleMode(stdin_handle, stdin_mode);
+
+    printf("\e[?25h");
+    printf("\e[?1049l");
+
+    // Show the cursor
 }
 

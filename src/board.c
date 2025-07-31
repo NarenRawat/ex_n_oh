@@ -10,10 +10,9 @@ bool is_cell_occupied(int size, int row, int col, Player game_board[size][size])
     return game_board[row][col] != 0;
 }
 
-void render_board(int size, Player board[size][size]) {
+void render_board(int size, Player board[size][size], int pointer_x, int pointer_y) {
     printf(ANSI_CUR_POS, 1, 1);
-    printf(ANSI_CLEAR);
-    int cell_number = 1;
+    // printf(ANSI_CLEAR);
 
     int rows = 0;
     int cols = 0;
@@ -29,7 +28,11 @@ void render_board(int size, Player board[size][size]) {
         for (int c = 0; c < size; c++) {
             switch (board[r][c]) {
                 case PLAYER_NONE:
-                    printf("  %d  ", cell_number);
+                    if (pointer_y == r && pointer_x == c) {
+                        printf(" \e[7m   \e[0m ");
+                    } else {
+                        printf("     ");
+                    }
                     break;
                 case PLAYER_X:
                     printf(ANSI_FG_RED);
@@ -46,8 +49,6 @@ void render_board(int size, Player board[size][size]) {
             if (c != size - 1) {
                 printf("│");
             }
-
-            cell_number++;
         }
 
         if (r != size - 1) {

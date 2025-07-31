@@ -7,8 +7,4 @@ typedef enum {
     PLAYER_O
 } Player;
 
-
-bool check_winner(int size, Player game_board[size][size], Player current_player);
-int get_user_move(int size);
-
 #endif

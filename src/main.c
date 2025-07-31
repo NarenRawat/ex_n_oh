@@ -6,57 +6,27 @@
 #include "console.h"
 #include "player.h"
 #include "board.h"
+#include "pointer.h"
+#include "game.h"
+#include "direction.h"
 
 #define BOARD_SIZE 3
 
-Player game_board[BOARD_SIZE][BOARD_SIZE] = {0};
+Game game;
 
 void cleanup(void);
-void move_pointer(int *pointer_x, int *pointer_y, char dir, int board_size) {
-    switch (dir) {
-        case 'u':
-            (*pointer_y)--;
-            if (*pointer_y < 0) {
-                *pointer_y = board_size - 1;
-            }
-            break;
-        case 'd':
-            (*pointer_y)++;
-            if (*pointer_y >= board_size) {
-                *pointer_y = 0;
-            }
-            break;
-        case 'l':
-            (*pointer_x)--;
-            if (*pointer_x < 0) {
-                *pointer_x = board_size - 1;
-            }
-            break;
-        case 'r':
-            (*pointer_x)++;
-            if (*pointer_x >= board_size) {
-                *pointer_x = 0;
-            }
-            break;
-    }
-}
 
 int main(void) {
-    init_console();
-
     atexit(cleanup);
 
-    int pointer_x = BOARD_SIZE / 2;
-    int pointer_y = BOARD_SIZE / 2;
+    init_console();
+    init_game(&game, BOARD_SIZE);
 
-    printf(ANSI_CLEAR);
-
-    Player current_player = PLAYER_X;
-    int total_cell_occupied = 0;
     int input_code;
+    int total_cell_occupied = 0;
 
     while (1) {
-        render_board(BOARD_SIZE, game_board, pointer_x, pointer_y);
+        render_game(&game);
 
         input_code = get_input_code();
 
@@ -68,37 +38,37 @@ int main(void) {
             case VK_UP:
             case 'W':
             case 'K':
-                move_pointer(&pointer_x, &pointer_y, 'u', BOARD_SIZE);
+                move_pointer(&game.pointer, DIR_UP, BOARD_SIZE);
                 break;
             case VK_DOWN:
             case 'S':
             case 'J':
-                move_pointer(&pointer_x, &pointer_y, 'd', BOARD_SIZE);
+                move_pointer(&game.pointer, DIR_DOWN, BOARD_SIZE);
                 break;
             case VK_LEFT:
             case 'A':
             case 'H':
-                move_pointer(&pointer_x, &pointer_y, 'l', BOARD_SIZE);
+                move_pointer(&game.pointer, DIR_LEFT, BOARD_SIZE);
                 break;
             case VK_RIGHT:
             case 'D':
             case 'L':
-                move_pointer(&pointer_x, &pointer_y, 'r', BOARD_SIZE);
+                move_pointer(&game.pointer, DIR_RIGHT, BOARD_SIZE);
                 break;
             case VK_RETURN:
-                game_board[pointer_y][pointer_x] = current_player;
+                game.board.data[game.pointer.y][game.pointer.x] = game.current_player;
                 total_cell_occupied++;
 
-                    if (check_winner(BOARD_SIZE, game_board, current_player)) {
-                        render_board(BOARD_SIZE, game_board, -1, -1);
-                        printf("%c won!\n", current_player == PLAYER_X ? 'X' : 'O');
+                    if (check_winner(&game)) {
+                        render_game(&game);
+                        printf("%c won!\n", game.current_player == PLAYER_X ? 'X' : 'O');
                         break;
-                    } else if (total_cell_occupied == 9) { // all cells are filled
-                        render_board(BOARD_SIZE, game_board, -1, -1);
+                    } else if (total_cell_occupied == BOARD_SIZE * BOARD_SIZE) { // all cells are filled
+                        render_game(&game);
                         printf("It's a draw!\n");
                         break;
                     }
-                current_player = current_player == PLAYER_X ? PLAYER_O : PLAYER_X;
+                game.current_player = game.current_player == PLAYER_X ? PLAYER_O : PLAYER_X;
                 break;
         }
 
@@ -109,4 +79,5 @@ int main(void) {
 
 void cleanup(void) {
     cleanup_console();
+    cleanup_game(&game);
 }

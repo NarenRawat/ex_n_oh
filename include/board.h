@@ -2,8 +2,17 @@
 #define BOARD_H
 
 #include "player.h"
+#include "vector2d.h"
+#include "pointer.h"
 
-bool is_cell_occupied(int size, int row, int col, Player game_board[size][size]);
-void render_board(int size, Player board[size][size], int pointer_x, int pointer_y);
+typedef struct {
+    Player **data;
+    int size;
+} Board;
+
+void init_board(Board *board, int board_size);
+bool is_cell_occupied(Board *board, Vector2D cell);
+void render_board(Board *board, Player current_player, Pointer pointer);
+void cleanup_board(Board *board);
 
 #endif

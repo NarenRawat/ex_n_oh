@@ -1,35 +1,58 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "board.h"
 #include "player.h"
 #include "utils.h"
 #include "console.h"
+#include "vector2d.h"
+#include "pointer.h"
 
-bool is_cell_occupied(int size, int row, int col, Player game_board[size][size]) {
-    return game_board[row][col] != 0;
+void init_board(Board *board, int board_size) {
+    board->size = board_size;
+
+    board->data = malloc(board->size * sizeof(Player *));
+    for (int i = 0; i < board->size; i++) {
+        board->data[i] = malloc(board->size * sizeof(Player));
+        memset(board->data[i], PLAYER_NONE, board->size * sizeof(Player));
+    }
 }
 
-void render_board(int size, Player board[size][size], int pointer_x, int pointer_y) {
-    printf(ANSI_CUR_POS, 1, 1);
-    // printf(ANSI_CLEAR);
+bool is_cell_occupied(Board *board, Vector2D cell) {
+    return board->data[cell.y][cell.x] != PLAYER_NONE;
+}
 
-    int rows = 0;
-    int cols = 0;
+void render_board(Board *board, Player current_player, Pointer pointer) {
+    Vector2D console_size;
+    get_console_size(&console_size);
 
-    get_console_size(&rows, &cols);
+    int size = board->size;
 
-    int hpad = (cols - (size * 6 - 1)) / 2;
-    int vpad = (rows - (size * 3 - 1)) / 2;
+    int hpad = (console_size.x - (board->size * 6 - 1)) / 2;
+    int vpad = (console_size.y - (board->size * 3 - 1)) / 2;
 
     printf(ANSI_CUR_POS, vpad, 1);
+
     for (int r = 0; r < size; r++) {
         printf(ANSI_HOR_ABS, hpad);
         for (int c = 0; c < size; c++) {
-            switch (board[r][c]) {
+            switch (board->data[r][c]) {
                 case PLAYER_NONE:
-                    if (pointer_y == r && pointer_x == c) {
-                        printf(" \e[7m   \e[0m ");
+                    if (pointer.y == r && pointer.x == c) {
+                        // printf(" \e[7m   \e[0m ");
+                        switch (current_player) {
+                            case PLAYER_X:
+                                printf("    ");
+                                break;
+                            case PLAYER_O:
+                                printf("    ");
+                                break;
+                            case PLAYER_NONE:
+                            default:
+                            break;
+                        }
                     } else {
                         printf("     ");
                     }
@@ -45,12 +68,10 @@ void render_board(int size, Player board[size][size], int pointer_x, int pointer
                     printf(ANSI_RESET);
                     break;
             }
-
             if (c != size - 1) {
                 printf("│");
             }
         }
-
         if (r != size - 1) {
             printf("\n");
             printf("\e[%dG", hpad);
@@ -59,4 +80,12 @@ void render_board(int size, Player board[size][size], int pointer_x, int pointer
         }
         printf("\n");
     }
+}
+
+void cleanup_board(Board *board) {
+    int size = board->size;
+    for (int i = 0; i < size; i++) {
+        free(board->data[i]);
+    }
+    free(board->data);
 }

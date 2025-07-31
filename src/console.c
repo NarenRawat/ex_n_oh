@@ -2,13 +2,29 @@
 #include <stdio.h>
 
 #include "console.h"
+#include "vector2d.h"
 
 static HANDLE stdout_handle;
 static HANDLE stdin_handle;
 static UINT out_code_page;
 static DWORD stdin_mode;
 
-static int get_events_count() {
+void init_console(void) {
+    printf("\e[?1049h");
+    printf("\e[?25l");
+
+
+    stdout_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    stdin_handle = GetStdHandle(STD_INPUT_HANDLE);
+
+    GetConsoleMode(stdin_handle, &stdin_mode);
+    SetConsoleMode(stdin_handle, stdin_mode & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT));
+
+    out_code_page = GetConsoleOutputCP();
+    SetConsoleOutputCP(CP_UTF8);
+}
+
+static int get_events_count(void) {
     DWORD count;
     GetNumberOfConsoleInputEvents(stdin_handle, &count);
     return count;
@@ -35,40 +51,21 @@ int get_input_code(void) {
     return 0;
 }
 
-void get_console_size(int *rows, int *cols) {
+void get_console_size(Vector2D *p_vec) {
     CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 
     GetConsoleScreenBufferInfo(stdout_handle, &buffer_info);
 
-    *rows = buffer_info.dwSize.Y;
-    *cols = buffer_info.dwSize.X;
+    p_vec->x = buffer_info.dwSize.X;
+    p_vec->y = buffer_info.dwSize.Y;
 }
 
-void init_console(void) {
-    printf("\e[?1049h");
-    printf("\e[?25l");
-
-
-    stdout_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    stdin_handle = GetStdHandle(STD_INPUT_HANDLE);
-
-    GetConsoleMode(stdin_handle, &stdin_mode);
-    SetConsoleMode(stdin_handle, stdin_mode & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT));
-
-    out_code_page = GetConsoleOutputCP();
-    SetConsoleOutputCP(CP_UTF8);
-
-    // Hide the cursor
-}
 
 void cleanup_console(void) {
-
     SetConsoleOutputCP(out_code_page);
     SetConsoleMode(stdin_handle, stdin_mode);
 
     printf("\e[?25h");
     printf("\e[?1049l");
-
-    // Show the cursor
 }
 

@@ -27,6 +27,7 @@ bool check_winner(Player current_player);
 
 int main(void) {
     init_console();
+    return 0;
     printf(ANSI_CLEAR);
 
     Player current_player = PLAYER_X;

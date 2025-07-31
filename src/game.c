@@ -54,9 +54,11 @@ void run_game(Game *game) {
             case 'L':
                 move_pointer(&game->pointer, DIR_RIGHT, game->board.size);
                 break;
+
             case VK_RETURN:
-                game->board.data[game->pointer.y][game->pointer.x] = game->current_player;
-                total_cell_occupied++;
+                if (!is_cell_occupied(&game->board, game->pointer)) {
+                    game->board.data[game->pointer.y][game->pointer.x] = game->current_player;
+                    total_cell_occupied++;
 
                     if (check_winner(game)) {
                         render_game(game);
@@ -65,7 +67,9 @@ void run_game(Game *game) {
                         render_game(game);
                         printf("It's a draw!\n");
                     }
-                game->current_player = game->current_player == PLAYER_X ? PLAYER_O : PLAYER_X;
+
+                    game->current_player = game->current_player == PLAYER_X ? PLAYER_O : PLAYER_X;
+                }
                 break;
             default:
                 break;

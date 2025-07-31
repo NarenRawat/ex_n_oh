@@ -4,5 +4,6 @@
 void init_console(void);
 void get_console_size(int *rows, int *cols);
 void cleanup_console(void);
+int get_input_code(void);
 
 #endif

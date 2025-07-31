@@ -3,6 +3,7 @@
 #include <windows.h>
 
 #include "utils.h"
+#include "console.h"
 
 #define BOARD_SIZE 3
 #define ANSI_FG_RED "\e[38;2;255;0;0m"
@@ -20,7 +21,6 @@ typedef enum {
 Player game_board[BOARD_SIZE][BOARD_SIZE] = {0};
 
 void render_board(Player board[BOARD_SIZE][BOARD_SIZE], int size);
-void init_console();
 bool is_cell_occupied(int row, int col);
 int get_user_move();
 bool check_winner(Player current_player);
@@ -99,10 +99,6 @@ bool check_winner(Player current_player) {
     }
 
     return false;
-}
-
-void init_console() {
-    SetConsoleOutputCP(CP_UTF8);
 }
 
 bool is_cell_occupied(int row, int col) {

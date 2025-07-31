@@ -14,6 +14,7 @@ typedef struct {
 } Game;
 
 void init_game(Game *game, int board_size);
+void run_game(Game *game);
 bool check_winner(Game *game);
 void render_game(Game *game);
 bool check_winner(Game *game);

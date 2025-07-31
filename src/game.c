@@ -1,8 +1,13 @@
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <windows.h>
+
 #include "game.h"
 #include "board.h"
 #include "player.h"
+#include "console.h"
+#include "direction.h"
 
 void init_game(Game *game, int board_size) {
     init_board(&game->board, board_size);
@@ -15,6 +20,59 @@ void init_game(Game *game, int board_size) {
     game->pointer.y = board_size / 2;
 }
 
+void run_game(Game *game) {
+    int input_code = get_input_code();
+    int total_cell_occupied = 0;
+
+    while (game->is_running) {
+        render_game(game);
+
+        input_code = get_input_code();
+
+        switch (input_code) {
+            case VK_ESCAPE:
+            case 'Q':
+                return;
+                break;
+            case VK_UP:
+            case 'W':
+            case 'K':
+                move_pointer(&game->pointer, DIR_UP, game->board.size);
+                break;
+            case VK_DOWN:
+            case 'S':
+            case 'J':
+                move_pointer(&game->pointer, DIR_DOWN, game->board.size);
+                break;
+            case VK_LEFT:
+            case 'A':
+            case 'H':
+                move_pointer(&game->pointer, DIR_LEFT, game->board.size);
+                break;
+            case VK_RIGHT:
+            case 'D':
+            case 'L':
+                move_pointer(&game->pointer, DIR_RIGHT, game->board.size);
+                break;
+            case VK_RETURN:
+                game->board.data[game->pointer.y][game->pointer.x] = game->current_player;
+                total_cell_occupied++;
+
+                    if (check_winner(game)) {
+                        render_game(game);
+                        printf("%c won!\n", game->current_player == PLAYER_X ? 'X' : 'O');
+                    } else if (total_cell_occupied == game->board.size * game->board.size) { // all cells are filled
+                        render_game(game);
+                        printf("It's a draw!\n");
+                    }
+                game->current_player = game->current_player == PLAYER_X ? PLAYER_O : PLAYER_X;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
 void render_game(Game *game) {
     render_board(&game->board, game->current_player, game->pointer);
 }
@@ -22,7 +80,7 @@ void render_game(Game *game) {
 bool check_primary_diagonal(Board *board, Player player) {
     int size = board->size;
 
-    for (int i = 0; i , size; i++) {
+    for (int i = 0; i < size; i++) {
         if (board->data[i][i] != player) {
             return false;
         }

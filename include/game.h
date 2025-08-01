@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "pointer.h"
+#include "cursor.h"
 #include "player.h"
 #include "board.h"
 #include <stdbool.h>
@@ -9,7 +9,7 @@
 typedef struct {
     bool is_running;
     Player current_player;
-    Pointer pointer;
+    Cursor cursor;
     Board board;
 } Game;
 

@@ -3,7 +3,7 @@
 
 #include "player.h"
 #include "vector2d.h"
-#include "pointer.h"
+#include "cursor.h"
 
 typedef struct {
     Player **data;
@@ -12,7 +12,7 @@ typedef struct {
 
 void init_board(Board *board, int board_size);
 bool is_cell_occupied(Board *board, Vector2D cell);
-void render_board(Board *board, Player current_player, Pointer pointer);
+void render_board(Board *board, Player current_player, Cursor cursor);
 void cleanup_board(Board *board);
 
 #endif

@@ -8,7 +8,7 @@
 #include "utils.h"
 #include "console.h"
 #include "vector2d.h"
-#include "pointer.h"
+#include "cursor.h"
 
 void init_board(Board *board, int board_size) {
     board->size = board_size;
@@ -24,7 +24,7 @@ bool is_cell_occupied(Board *board, Vector2D cell) {
     return board->data[cell.y][cell.x] != PLAYER_NONE;
 }
 
-void render_board(Board *board, Player current_player, Pointer pointer) {
+void render_board(Board *board, Player current_player, Cursor cursor) {
     Vector2D console_size;
     get_console_size(&console_size);
 
@@ -40,7 +40,7 @@ void render_board(Board *board, Player current_player, Pointer pointer) {
         for (int c = 0; c < size; c++) {
             switch (board->data[r][c]) {
                 case PLAYER_NONE:
-                    if (pointer.y == r && pointer.x == c) {
+                    if (cursor.y == r && cursor.x == c) {
                         // printf(" \e[7m   \e[0m ");
                         switch (current_player) {
                             case PLAYER_X:

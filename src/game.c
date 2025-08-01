@@ -16,8 +16,8 @@ void init_game(Game *game, int board_size) {
 
     game->current_player = PLAYER_X;
 
-    game->pointer.x = board_size / 2;
-    game->pointer.y = board_size / 2;
+    game->cursor.x = board_size / 2;
+    game->cursor.y = board_size / 2;
 }
 
 void run_game(Game *game) {
@@ -37,27 +37,27 @@ void run_game(Game *game) {
             case VK_UP:
             case 'W':
             case 'K':
-                move_pointer(&game->pointer, DIR_UP, game->board.size);
+                move_cursor(&game->cursor, DIR_UP, game->board.size);
                 break;
             case VK_DOWN:
             case 'S':
             case 'J':
-                move_pointer(&game->pointer, DIR_DOWN, game->board.size);
+                move_cursor(&game->cursor, DIR_DOWN, game->board.size);
                 break;
             case VK_LEFT:
             case 'A':
             case 'H':
-                move_pointer(&game->pointer, DIR_LEFT, game->board.size);
+                move_cursor(&game->cursor, DIR_LEFT, game->board.size);
                 break;
             case VK_RIGHT:
             case 'D':
             case 'L':
-                move_pointer(&game->pointer, DIR_RIGHT, game->board.size);
+                move_cursor(&game->cursor, DIR_RIGHT, game->board.size);
                 break;
 
             case VK_RETURN:
-                if (!is_cell_occupied(&game->board, game->pointer)) {
-                    game->board.data[game->pointer.y][game->pointer.x] = game->current_player;
+                if (!is_cell_occupied(&game->board, game->cursor)) {
+                    game->board.data[game->cursor.y][game->cursor.x] = game->current_player;
                     total_cell_occupied++;
 
                     if (check_winner(game)) {
@@ -78,7 +78,7 @@ void run_game(Game *game) {
 }
 
 void render_game(Game *game) {
-    render_board(&game->board, game->current_player, game->pointer);
+    render_board(&game->board, game->current_player, game->cursor);
 }
 
 bool check_primary_diagonal(Board *board, Player player) {
